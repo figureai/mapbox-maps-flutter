@@ -186,6 +186,15 @@ class _MapboxMapsPlatform {
       return new Future.error(e);
     }
   }
+
+  /// take mapwidget snapshot
+  Future<Uint8List?> takeSnapshot() {
+    try {
+      return _channel.invokeMethod('takeSnapshot');
+    } on PlatformException catch (e) {
+      return new Future.error(e);
+    }
+  }
 }
 
 /// A registry to hold suffixes for Channels.

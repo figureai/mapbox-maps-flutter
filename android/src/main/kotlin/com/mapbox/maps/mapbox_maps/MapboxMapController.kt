@@ -13,6 +13,9 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
+import java.io.ByteArrayOutputStream
+import android.graphics.Bitmap
+
 
 class MapboxMapController(
   context: Context,
@@ -128,9 +131,31 @@ class MapboxMapController(
         gestureController.removeListeners()
         result.success(null)
       }
+      "takeSnapshot" -> {
+        takeSnapshot(call, result)
+      }
       else -> {
         result.notImplemented()
       }
+    }
+  }
+
+  // 截图
+  private fun takeSnapshot(call: MethodCall, result: MethodChannel.Result) {
+    val snapshotResult = mapView.snapshot()
+    if(snapshotResult != null) {
+      var output = ByteArrayOutputStream()
+      snapshotResult.compress(Bitmap.CompressFormat.PNG, 100, output)
+      var outputRes = output.toByteArray()
+      try {
+          output.close()
+          result.success(outputRes)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        result.success(null)
+      }
+    } else {
+      result.success(null)
     }
   }
 

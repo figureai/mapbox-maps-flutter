@@ -1,5 +1,5 @@
 import Flutter
-import MapboxMaps
+@_spi(Experimental) import MapboxMaps
 import UIKit
 
 class EventsObserver: Observer {
@@ -152,6 +152,8 @@ class MapboxMapController: NSObject, FlutterPlatformView {
         case "gesture#remove_listeners":
             gesturesController!.removeListeners()
             result(nil)
+        case "takeSnapshot":
+            takeSnapshot(methodCall: methodCall, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -159,6 +161,18 @@ class MapboxMapController: NSObject, FlutterPlatformView {
 
     private func getEventMethodName(eventType: String) -> String {
         return "event#\(eventType)"
+    }
+
+    // 截图
+    private func takeSnapshot(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
+      do {
+        let image = try mapView.snapshot()
+        result(image.pngData())
+        // 保存到图库
+        //      UIImageWriteToSavedPhotosAlbum(image, self, nil, nil)
+      } catch {
+        result(nil)
+      }
     }
 
     private func convertDictionaryToString(dict: [String: Any]) -> String {

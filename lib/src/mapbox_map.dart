@@ -591,6 +591,11 @@ class MapboxMap extends ChangeNotifier {
   Future<void> cancelCameraAnimation() =>
       _animationManager.cancelCameraAnimation();
 
+  /// take mapwidget snapshot
+  Future<Uint8List?> takeSnapshot() {
+    return _mapboxMapsPlatform.takeSnapshot();
+  }
+
   void _setupGestures() {
     if (onMapTapListener != null ||
         onMapLongTapListener != null ||
